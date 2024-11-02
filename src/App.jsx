@@ -12,6 +12,7 @@ export const App = () => {
   const [time, setTime] = useState(0);
   const [records, setRecords] = useState([]);
   const [isRecordLoading, setIsRecordLoading] = useState(true);
+  const [isInputAll, setIsInputAll] = useState(true);
 
   useEffect(() => {
     getAllRecord();
@@ -24,7 +25,7 @@ export const App = () => {
   };
 
   const insertRecordToSupabase = async (title, time) => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('study-record')
       .insert({ title: title, time: time })
       .select()
@@ -49,7 +50,7 @@ export const App = () => {
 
   const RecordList = () => {
     return (
-      <ul>
+      <ul data-testid="RecordList">
         {records.map((item) => (
           <li key={item.id}>
             {item.title}: {item.time}
@@ -69,6 +70,7 @@ export const App = () => {
   }
   const onSubmitClick = () => {
     if (title == '' || time == 0) {
+      setIsInputAll(false)
       return;
     }
 
@@ -81,19 +83,20 @@ export const App = () => {
 
     setTitle('');
     setTime(0);
+    setIsInputAll(true)
   };
 
   return (
     <>
       <p>学習記録一覧</p>
       {isRecordLoading ? <p>Now Loading...</p> : <RecordList />}
-      Title: <input value={title} onChange={onChangeTitle}></input>
+      Title: <input value={title} data-testid="TitleText" onChange={onChangeTitle}></input>
       <br />
-      Time: <input type="number" value={time} onChange={onChangeTime}></input>
+      Time: <input type="number" value={time} data-testid="Time" onChange={onChangeTime}></input>
       時間
       <br />
       <button onClick={onSubmitClick}>登録</button>
-      {(title == '' || time == 0) && (
+      {!isInputAll && (
         <p style={{ color: 'red' }}>入力されていない項目があります。</p>
       )}
       合計時間： {totalTime} / 1000(h)
