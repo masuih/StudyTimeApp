@@ -23,6 +23,7 @@ jest.mock('../Supabase', () => {
 })
 
 describe('Appコンポーネント', () => {
+
   test('登録内容が確認可能である', async () => {
     getAllRecord.mockResolvedValueOnce(initialRecords)
 
@@ -30,7 +31,7 @@ describe('Appコンポーネント', () => {
 
     expect(screen.queryByText(/Now Loading.../)).toBeInTheDocument();
     expect(await screen.findByTestId("RecordList")).toBeVisible();
-    screen.debug();
+    //    screen.debug();
   });
 
   test('勉強記録の追加', async () => {
@@ -62,7 +63,6 @@ describe('Appコンポーネント', () => {
     //追加後のレコード数を取得
     const itemNumAfter = screen.getAllByRole("listitem").length
 
-    screen.debug();
     //追加前後のレコード数比較
     expect(itemNumAfter).toEqual(itemNumBefore + 1);
   })
@@ -84,8 +84,6 @@ describe('Appコンポーネント', () => {
     await user.click(deleteTarget)
 
     await screen.findByTestId("RecordList");
-
-    screen.debug();
 
     const itemNumAfter = screen.getAllByRole("listitem").length
     expect(itemNumAfter).toEqual(itemNumBefore - 1);
